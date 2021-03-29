@@ -58,9 +58,8 @@ module.exports = router => {
             res.json({
                 'status': true,
                 'msg': '',
-                'data': {
-                    result
-                }
+                'data':                    result
+
             });
         });
     });
