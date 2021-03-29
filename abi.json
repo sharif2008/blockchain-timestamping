@@ -1,79 +1,84 @@
 [
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_uuid",
-        "type": "string"
-      },
-      {
-        "name": "_docId",
-        "type": "string"
-      },
-      {
-        "name": "_sha256",
-        "type": "string"
-      }
-    ],
-    "name": "issueCertificate",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_uuid",
-        "type": "string"
-      }
-    ],
-    "name": "getByUUID",
-    "outputs": [
-      {
-        "name": "",
-        "type": "string"
-      },
-      {
-        "name": "",
-        "type": "string"
-      },
-      {
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "_uuid",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "_docId",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "_sha256",
-        "type": "string"
-      }
-    ],
-    "name": "NewCertificateIssue",
-    "type": "event"
-  }
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "_uuid",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "_docId",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "_sha256",
+				"type": "string"
+			}
+		],
+		"name": "NewCertificateIssue",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_uuid",
+				"type": "string"
+			}
+		],
+		"name": "getByUUID",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_uuid",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_docId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_sha256",
+				"type": "string"
+			}
+		],
+		"name": "issueCertificate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
 ]

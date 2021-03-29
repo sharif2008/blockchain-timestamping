@@ -53,6 +53,8 @@ module.exports = router => {
     router.get('/api/post/:id', (req, res) => {
         const contract = new web3.eth.Contract(abi, process.env.CONTRACT_ADDRESS);
         contract.methods.getByUUID(req.params.id).call((error, result) => {
+            console.log(error);
+
             res.json({
                 'status': true,
                 'msg': '',
