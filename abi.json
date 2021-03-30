@@ -1,5 +1,28 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_uuid",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_docId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_sha256",
+				"type": "string"
+			}
+		],
+		"name": "issueCertificate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -56,29 +79,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_uuid",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_docId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_sha256",
-				"type": "string"
-			}
-		],
-		"name": "issueCertificate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

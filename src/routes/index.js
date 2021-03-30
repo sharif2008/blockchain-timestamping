@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const Web3 = require('web3');
 const axios = require('axios');
-const EthereumTx = require('ethereumjs-tx');
+const EthereumTx = require('ethereumjs-tx').Transaction;
 const log = require('ololog').configure({ 'time': true });
 const ansi = require('ansicolor').nice;
 const fs = require('fs');
@@ -13,9 +13,9 @@ const fs = require('fs');
  * Network configuration
  */
 const network = `${process.env.NETWORK_ADDRESS}`;
-const testnet = `https://rinkeby.infura.io/v3/${process.env.INFURA_ACCESS_TOKEN}`;
+const testnet = `https://ropsten.infura.io/v3/${process.env.INFURA_ACCESS_TOKEN}`;
 const MAX_GAS = 2000000;
-const MAX_GWEI = '8';
+const MAX_GWEI = '20';
 
 /**
  * Change the provider that is passed to HttpProvider to `mainnet` for live transactions.
@@ -50,24 +50,30 @@ module.exports = router => {
     });
 
 
-    router.get('/api/post/:id', (req, res) => {
+    router.get('/api/certificate/:id', (req, res) => {
         const contract = new web3.eth.Contract(abi, process.env.CONTRACT_ADDRESS);
         contract.methods.getByUUID(req.params.id).call((error, result) => {
-            console.log(error);
+            if (error) {
+                console.log(error);
+                res.json({
+                    'status': false,
+                    'msg': error.message
+                });
 
-            res.json({
-                'status': true,
-                'msg': '',
-                'data':                    result
-
-            });
+            } else {
+                res.json({
+                    'status': true,
+                    'data': result
+                });
+            }
         });
     });
 
-    router.post('/api/post/new', (req, res) => {
+    router.post('/api/certificate/new', async (req, res) => {
 
         const contract = new web3.eth.Contract(abi, process.env.CONTRACT_ADDRESS);
-        const data = contract.methods.newPost(req.body.id, req.body.userId, req.body.data).encodeABI();
+        const data = contract.methods.issueCertificate(req.body.uuid, req.body.docId, req.body.sha256).encodeABI();
+        //console.log(data);
         const privateKey = Buffer.from(process.env.WALLET_PRIVATE_KEY, 'hex');
 
         web3.eth.estimateGas({
@@ -79,63 +85,54 @@ module.exports = router => {
 
         });
 
-        web3.eth.getTransactionCount(process.env.WALLET_ADDRESS).then(nonce => {
+        let nonce = await web3.eth.getTransactionCount(process.env.WALLET_ADDRESS);
 
-            log(`nonce:${nonce}`);
+        log(`nonce:${nonce}`);
 
-            const rawTx = {
-                nonce,
-                'from': process.env.WALLET_ADDRESS,
-                'to': process.env.CONTRACT_ADDRESS,
-                'gasPrice': web3.utils.toHex(web3.utils.toWei(MAX_GWEI, 'gwei')),
-                'gas': MAX_GAS,
-                data
-            };
+        const rawTx = {
+            nonce: nonce,
+            'from': process.env.WALLET_ADDRESS,
+            'to': process.env.CONTRACT_ADDRESS,
+            'gasPrice': web3.utils.toHex(web3.utils.toWei(MAX_GWEI, 'gwei')),
+            'gas': MAX_GAS,
+            data
+        };
 
-            const ethTx = new EthereumTx(rawTx);
-            ethTx.sign(privateKey);
+        const ethTx = new EthereumTx(rawTx, { 'chain': 'ropsten' });
+        ethTx.sign(privateKey);
 
-            const serializedTx = ethTx.serialize();
+        const serializedTx = ethTx.serialize();
 
-            web3.eth.sendSignedTransaction(`0x${serializedTx.toString('hex')}`)
-                .once('transactionHash', hash => {
 
-                    log(`transactionHash: ${hash}`);
-                    res.json({
-                        'status': true,
-                        'msg': 'Successfully submitted',
-                        'data': {
-                            'tx': hash
-                        }
-                    });
-
-                })
-                .once('receipt', receipt => {
-
-                    log(`receipt is ready : ${receipt.transactionHash}`);
-
-                })
-                .on('error', error => {
-
-                    log(error);
-
-                })
-                .then(receipt => { // Will be fired once the receipt is mined
-                    log(`${receipt.transactionHash} is mined`);
-                    log(`transactionHash: ${receipt.transactionHash} \nblockHash:  ${receipt.blockHash} \nstatus  : ${receipt.status} , gasUsed  : ${receipt.gasUsed}, blockNumber: ${receipt.blockNumber}, `);
-                })
-                .catch(error => {
-                    log(error.message);
-                    res.json({
-                        'status': false,
-                        'msg': error.message
-                    });
+        web3.eth.sendSignedTransaction(`0x${serializedTx.toString('hex')}`)
+            .once('transactionHash', hash => {
+                log(`transactionHash: ${hash}`);
+                res.json({
+                    'status': true,
+                    'msg': 'Successfully submitted. Please wait until it gets mined.',
+                    'data': {
+                        'tx': hash
+                    }
                 });
-
-        });
+            })
+            .once('receipt', receipt => {
+                log(`receipt is ready : ${receipt.transactionHash}`);
+            })
+            .on('error', error => {
+                log('err:' + error.message);
+            })
+            .then(receipt => { // Will be fired once the receipt is mined
+                log(`${receipt.transactionHash} is mined`);
+                log(`transactionHash: ${receipt.transactionHash} \nblockHash:  ${receipt.blockHash} \nstatus  : ${receipt.status} , gasUsed  : ${receipt.gasUsed}, blockNumber: ${receipt.blockNumber}, `);
+            })
+            .catch(error => {
+                log(error.message);
+                res.json({
+                    'status': false,
+                    'msg': error.message
+                });
+            });
 
     });
-
-
 
 };
