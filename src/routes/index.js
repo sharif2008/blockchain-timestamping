@@ -34,6 +34,15 @@ module.exports = router => {
 
     });
 
+    router.get('/sign', (req, res) => {
+
+        res.render('sign', {
+            'description': res.locals.config.description,
+            'title': res.locals.config.site_name
+        });
+
+    });
+
 
     router.get('/api/keypair', (req, res) => {
 
@@ -72,7 +81,7 @@ module.exports = router => {
     router.post('/api/certificate/new', async (req, res) => {
 
         const contract = new web3.eth.Contract(abi, process.env.CONTRACT_ADDRESS);
-        const data = contract.methods.issueCertificate(req.body.uuid, req.body.docId, req.body.sha256).encodeABI();
+        const data = contract.methods.issueCertificate(req.body.uuid, req.body.docId, req.body.hash).encodeABI();
         //console.log(data);
         const privateKey = Buffer.from(process.env.WALLET_PRIVATE_KEY, 'hex');
 
@@ -107,13 +116,15 @@ module.exports = router => {
         web3.eth.sendSignedTransaction(`0x${serializedTx.toString('hex')}`)
             .once('transactionHash', hash => {
                 log(`transactionHash: ${hash}`);
-                res.json({
+                return res.json({
                     'status': true,
                     'msg': 'Successfully submitted. Please wait until it gets mined.',
                     'data': {
-                        'tx': hash
+                        'tx': hash,
+                        'uuid': req.body.uuid
                     }
                 });
+
             })
             .once('receipt', receipt => {
                 log(`receipt is ready : ${receipt.transactionHash}`);
@@ -127,7 +138,7 @@ module.exports = router => {
             })
             .catch(error => {
                 log(error.message);
-                res.json({
+                return res.json({
                     'status': false,
                     'msg': error.message
                 });
