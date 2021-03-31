@@ -1,0 +1,79 @@
+[
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_uuid",
+        "type": "string"
+      },
+      {
+        "name": "_docId",
+        "type": "string"
+      },
+      {
+        "name": "_sha256",
+        "type": "string"
+      }
+    ],
+    "name": "issueCertificate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_uuid",
+        "type": "string"
+      }
+    ],
+    "name": "getByUUID",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      },
+      {
+        "name": "",
+        "type": "string"
+      },
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_uuid",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "_docId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "_sha256",
+        "type": "string"
+      }
+    ],
+    "name": "NewCertificateIssue",
+    "type": "event"
+  }
+]
