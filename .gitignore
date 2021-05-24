@@ -1,17 +1,4 @@
 .idea/
 node_modules/
 
-static/css/styles.css
-static/build.min.js
-static/build.min.js.map
-static/js/templates/partials.min.js
-static/js/templates/views.min.js
-
-coverage/
-
-package-lock.json
-
-npm-debug.log
-
-uploads/*
 
