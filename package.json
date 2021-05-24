@@ -29,7 +29,6 @@
     "mime": "^2.5.2",
     "multer": "^1.4.2",
     "node-rest-client": "^3.1.0",
-    "node-sass": "4.9.0",
     "ololog": "^1.1.84",
     "path": "^0.12.7",
     "sha256-file": "^1.0.0",
@@ -48,7 +47,6 @@
     "onchange": "^4.0.0"
   },
   "scripts": {
-    "postinstall": "make build",
     "start": "node app.js",
     "test": "make test"
   },
