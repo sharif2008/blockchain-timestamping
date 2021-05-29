@@ -1,0 +1,34 @@
+<div class="container">
+    <h2 class="text-center">Document Timestamping and verification using
+        Blockchain</h2>
+    <hr />
+    <div class="row">
+
+        <div class="col">
+            <h4>Verify From Blockchain</h4>
+            <hr />
+            <form action="#">
+
+                <div class="form-group">
+                    <label for="verifyDocument">Document to be verified </label>
+                    <input type="file" class="form-control document verify" id="verifyDocument" placeholder=""
+                        name="verifyDocument" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="hash">SHA256 of uploaded document</label>
+                    <textarea class="form-control" id="verifyHash" placeholder="" name="hash" readonly></textarea>
+                </div>
+                <button id="verifyButton" type="button" class="btn btn-success">Verify</button>
+                <i>(Please try verification after the transaction is mined)</i>
+            </form>
+            <br />
+            <div class="alert alert-primary d-none" role="alert">
+                <span id="verifyStatus"></span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="js/sign.js">  </script>

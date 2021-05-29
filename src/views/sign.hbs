@@ -1,156 +1,43 @@
 <div class="container">
-    <h2 class="text-center">Document Timestamping and verification using Blockchain</h2>
-    <hr>
+    <h2 class="text-center">Document Timestamping and verification using
+        Blockchain</h2>
+    <hr />
     <div class="row">
 
         <div class="col">
-            <h4>Upload to Blockchain</h4>
-            <hr>
+            <h4>Sign and Upload to Blockchain</h4>
+            <hr />
             <form action="#">
                 <div class="form-group">
                     <label for="uploadDocument">Upload document</label>
                     <input type="file" class="form-control document upload" id="uploadDocument" placeholder=""
-                        name="document" required>
+                        name="document" required />
                 </div>
                 <div class="form-group">
-                    <label for="uploadUuid">Document UUID</label>
-                    <input type="text" class="form-control" id="uploadUuid" name="uuid" readonly>
+                    <label for="uploadUuid">Document name</label>
+                    <input type="text" class="form-control" id="uploadUuid" name="uuid" readonly />
                 </div>
                 <div class="form-group">
                     <label for="hash">SHA256 of uploaded document</label>
                     <textarea class="form-control" id="uploadHash" placeholder="" name="hash" readonly></textarea>
                 </div>
 
-                <button id="signButton" type="button" class="btn btn-primary">Save into Blockchain</button>
-                <i>(Please remember the UUID for future verification)</i>
+                <button id="signButton" type="button" class="btn btn-primary">Save into
+                    Blockchain</button>
             </form>
-            <br>
+            <br />
             <div class="row">
                 <div class="col">
-                    Document UUID: <span id='txUuid'>N/A</span> <br>
-                    Transaction hash: <span id='txHash'>N/A</span> <br>
-                    Transaction Link: <span id='txLink'>N/A</span> <br>
+                    Transaction hash:
+                    <span id="txHash">N/A</span>
+                    <br />
+                    Transaction Link:
+                    <span id="txLink">N/A</span>
+                    <br />
                 </div>
-            </div>
-        </div>
-        <div class="col">
-            <h4>Verify From Blockchain</h4>
-            <hr>
-            <form action="#">
-                <div class="form-group">
-                    <label for="verifyUuid">Document UUID</label>
-                    <input type="text" class="form-control" id="verifyUuid" placeholder="UUID" name="verifyUuid"
-                        required>
-                </div>
-                <div class="form-group">
-                    <label for="verifyDocument">Document to be verified </label>
-                    <input type="file" class="form-control document verify" id="verifyDocument" placeholder=""
-                        name="verifyDocument" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="hash">SHA256 of uploaded document</label>
-                    <textarea class="form-control" id="verifyHash" placeholder="" name="hash" readonly></textarea>
-                </div>
-                <button id="verifyButton" type="button" class="btn btn-success">Verify</button>
-                <i>(Please try verification after the transaction is mined)</i>
-            </form>
-            <br>
-            <div class="alert alert-primary d-none" role="alert">
-                <span id="verifyStatus"></span>
             </div>
         </div>
     </div>
-
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#verifyButton").click(function () {
-            let hash = $('#verifyHash').val();
-            $.ajax({
-                url: '/api/certificate/' + $('#verifyUuid').val(),
-                type: 'get',
-                success: function (response) {
-                    if (response.status) {
-                        console.log((response.data[2] == hash) ? 'match' : 'Not match');
-                        $('.alert').removeClass('d-none');
-
-                        if (response.data[2].length > 0 && response.data[2] == hash) {
-                            let msg = 'Congratulations!! This document exists in the blockhain';
-                            $('#verifyStatus').html(msg);
-                        } else {
-                            let msg = 'Sorry!!! we could not verify the document from blockchain';
-                            $('#verifyStatus').html(msg);
-                        }
-
-                    } else {
-                        alert(response.msg);
-                    }
-                },
-            });
-        });
-
-        $("#signButton").click(function () {
-            let data = {};
-            data.hash = $('#uploadHash').val();
-            data.uuid = $('#uploadUuid').val();
-            data.docId = '';
-            $.ajax({
-                url: '/api/certificate/new',
-                type: 'post',
-                data: data,
-                success: function (response) {
-                    if (response.status) {
-                        alert(response.msg);
-                        $('#txUuid').html(response.data.uuid);
-                        $('#txHash').html(response.data.tx);
-                        let link = "https://ropsten.etherscan.io/tx/" + response.data.tx;
-                        link = '<a href="' + link + '" target="_blank">' + link + ' </a>';
-                        link += '( Click the  link to check mining status )';
-                        $('#txLink').html(link);
-                    } else {
-                        alert(response.msg);
-                    }
-                },
-            });
-        });
-
-        $(".document").change(function () {
-            let documentSelector = $(this);
-
-            var fd = new FormData();
-            var files = documentSelector[0].files;
-
-            // Check file selected or not
-            if (files.length > 0) {
-                fd.append('document', files[0]);
-
-                $.ajax({
-                    url: '/file/upload',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        if (response.status) {
-                            console.log(documentSelector.attr("class"));
-                            if (documentSelector.hasClass('upload')) {
-                                $('#uploadHash').val(response.hash);
-                                $('#uploadUuid').val(response.uuid);
-                            } else {
-                                $('#verifyHash').val(response.hash);
-                            }
-
-                        } else {
-                            alert(response.msg);
-                        }
-                    },
-                });
-            } else {
-                alert("Please select a file.");
-            }
-        });
-    });
-
-</script>
+<script type="text/javascript" src="js/sign.js">  </script>

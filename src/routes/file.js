@@ -32,7 +32,7 @@ module.exports = router => {
             let hash = sha256File('./uploads/' + req.file.filename);
             res.json({
                 "status": "true",
-                'fileName': req.file.filename,
+                'fileName': req.file.originalname,
                 'mimetype': req.file.mimetype,
                 'uuid': path.basename(req.file.filename, path.extname(req.file.filename)),
                 'hash': hash,

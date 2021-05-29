@@ -1,5 +1,6 @@
 {
-  "This repo is a starter kit for working with Node.js, Handlebars, Sass, and Babel.": "This repo is a starter kit for working with Node.js, Handlebars, Sass, and Babel.",
-  "iProtect Blockchain": "iProtect Blockchain",
+  "blockchain_title": "Blockchain Timestamping",
+  "blocckhain_description": "Document Timestamping and verification using Blockchain",
+  "Blockchain Timestamping": "Blockchain Timestamping",
   "Document Timestamping and verification using Blockchain": "Document Timestamping and verification using Blockchain"
 }

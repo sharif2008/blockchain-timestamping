@@ -7,7 +7,7 @@ const EthereumTx = require('ethereumjs-tx').Transaction;
 const log = require('ololog').configure({ 'time': true });
 const ansi = require('ansicolor').nice;
 const fs = require('fs');
-
+const getUuid = require('uuid-by-string');
 
 /**
  * Network configuration
@@ -43,6 +43,14 @@ module.exports = router => {
 
     });
 
+    router.get('/verify', (req, res) => {
+
+        res.render('verify', {
+            'description': res.locals.config.description,
+            'title': res.locals.config.site_name
+        });
+
+    });
 
     router.get('/api/keypair', (req, res) => {
 
@@ -59,9 +67,10 @@ module.exports = router => {
     });
 
 
-    router.get('/api/certificate/:id', (req, res) => {
+    router.get('/api/certificate/:hash', (req, res) => {
+        const uuidHash = getUuid(req.params.hash)
         const contract = new web3.eth.Contract(abi, process.env.CONTRACT_ADDRESS);
-        contract.methods.getByUUID(req.params.id).call((error, result) => {
+        contract.methods.getByUUID(uuidHash).call((error, result) => {
             if (error) {
                 console.log(error);
                 res.json({
@@ -79,9 +88,9 @@ module.exports = router => {
     });
 
     router.post('/api/certificate/new', async (req, res) => {
-
+        const uuidHash = getUuid(req.body.hash)
         const contract = new web3.eth.Contract(abi, process.env.CONTRACT_ADDRESS);
-        const data = contract.methods.issueCertificate(req.body.uuid, req.body.docId, req.body.hash).encodeABI();
+        const data = contract.methods.issueCertificate(uuidHash, req.body.docId, req.body.hash).encodeABI();
         //console.log(data);
         const privateKey = Buffer.from(process.env.WALLET_PRIVATE_KEY, 'hex');
 
@@ -144,6 +153,25 @@ module.exports = router => {
                 });
             });
 
+    });
+
+    router.get('/api/transaction/list', async (req, res) => {
+        try {
+            const apiUrl = 'https://api-ropsten.etherscan.io/api?module=account&action=txlist&address=' + process.env.WALLET_ADDRESS + '&startblock=0&endblock=99999999&sort=asc&apikey=' + process.env.ETHARSACN_TOKEN;
+            //console.log(apiUrl);
+            let response = await axios.get(apiUrl);
+            // console.log(response.data);
+            let output = [];
+            response.data.result.forEach(function (item) {
+                //console.log(item.to.toUpperCase() + ' ' + process.env.CONTRACT_ADDRESS.toUpperCase());
+                if (item.to.toUpperCase() == process.env.CONTRACT_ADDRESS.toUpperCase()) {
+                    output.push(item);
+                }
+            });
+            res.json(output);
+        } catch (err) {
+            console.log(err.message);
+        }
     });
 
 };
