@@ -2,5 +2,77 @@
     <div class="jumbotron">
         <h1>{{__ title}}</h1>
         {{> intro}}
+
+        <h3>Problem statements</h3>
+        <p> Use of physical documents is cumbersome, and the world is moving towards the use of digital
+            documents. Digital documents are convenient to use, but proving their authenticity is often a
+            problem. Can it be proved that the document has not been altered? Is it possible to prove the
+            document you received is identical to the one you viewed earlier? Since there is no common
+            protocol to validate and verify digitized documents, the process of analyzing the documents in
+            private and government institutions is difficult. If there is a mechanism to verify the authenticity
+            of documents and to validate the authenticity and content of the documents, it would facilitate
+            users to manage their digital documents. The proposed solution for the above mentioned problems
+            using Blockchain technology.</p>
+        <p>Secure storage, easy retrieval and protected access to government documents hinders efficient
+            operations and increases costs for many governments. A blockchain-based system can serve as a
+            verification clearinghouse for these documents by providing public and private proof of the veracity
+            of a document or certification. A blockchain-based document verification system can also be used
+            to issue digital certificates that are impossible to counterfeit. This helps eliminate reputational risks
+            for an organization as well as improve trust and transparency by its stakeholders.</p>
+        <p>Blockchain can solve the existing problem of verifying the validity of digital assets such as
+            a picture of birth certificate, a pdf document stating any contract or a signed legal document
+            specifying a business deal very efficiently and at a very low implementation cost. Due to the
+            characteristics of the Blockchain (permanent decentralized ledger of information), these digital
+            signatures can be accessed by anyone. Hence anyone with access to the Blockchain can now verify
+            the authenticity of a digital asset without having to rely on trusted intermediaries.</p>
+
+        <h3>Digital signature </h3>
+        <p>
+        <ul>
+            <li>A digital signature is a mathematical scheme for verifying the authenticity of digital messages or
+                documents </li>
+            <li>Digital signatures use public and private key pairs to encrypt and decrypt data</li>
+            <li> By using digital signatures, data encrypted using a private key of a person can only be decrypted using
+                the same person’s public key. </li>
+        </ul>
+        </p>
+        <h3> What is Timestamping</h3>
+        <p>
+            Trusted timestamping is the process of securely keeping track of the creation and modification time of a
+            document.
+            Timestamps define as the standard of certain documents or files that exists for a certain time period.
+        </p>
+        <h3> What is TSA authority</h3>
+        <p> An authority permitted to time-stamp information on request. This authority can also be the verification
+            body
+            for the time-stamped information in the future.
+
+            In trusted timestamping services, time-stamped information may be verified only if it is timestamped by an
+            authentic TSA .e.g. GlobalSign.com
+        </p>
+        <h3> Why timestamping using blockchain</h3>
+        The blockchain itself provides all the characteristics of a trusted third party:-
+        <ul>
+            <li> It facilitates secure online transactions.</li>
+            <li> It is a decentralized and distributed network, and registered transactions cannot be altered
+                retroactively.
+            </li>
+            <li> This allows the participants to verify and audit transactions in an inexpensive manner. </li>
+        </ul>
+
+        <h3> How does it work in blockchain </h3>
+        At a high level the proposed solution includes the following steps:
+        <ul>
+
+            <li> 1) Creation of a digital fingerprint that is Cryptographic Hash (SHA- 512) of the digital document</li>
+            <li> 2) Store the digital fingerprint of the digital asset to blockchain</li>
+            <li> 3) Validation of the digital asset using the digital fingerprint stored on the Blockchain</li>
+        </ul>
+        <div class="text-center">
+            <img class="img-fluid img-responsive" src="img/system.png" />
+            <p>Figure: System architecture</p>
+        </div>
+
+
     </div>
 </main>

@@ -8,7 +8,7 @@ const log = require('ololog').configure({ 'time': true });
 const ansi = require('ansicolor').nice;
 const fs = require('fs');
 const getUuid = require('uuid-by-string');
-
+const abiDecoder = require('abi-decoder');
 /**
  * Network configuration
  */
@@ -22,6 +22,7 @@ const MAX_GWEI = '20';
  */
 const web3 = new Web3(new Web3.providers.HttpProvider(network));
 const abi = JSON.parse(fs.readFileSync('abi.json', 'utf8'));
+abiDecoder.addABI(abi);
 
 module.exports = router => {
 
@@ -50,6 +51,13 @@ module.exports = router => {
             'title': res.locals.config.site_name
         });
 
+    });
+
+    router.get('/txList', (req, res) => {
+        res.render('txList', {
+            'description': res.locals.config.description,
+            'title': res.locals.config.site_name
+        });
     });
 
     router.get('/api/keypair', (req, res) => {
@@ -90,6 +98,16 @@ module.exports = router => {
     router.post('/api/certificate/new', async (req, res) => {
         const uuidHash = getUuid(req.body.hash)
         const contract = new web3.eth.Contract(abi, process.env.CONTRACT_ADDRESS);
+
+        const result = await contract.methods.getByUUID(uuidHash).call();
+        console.log(result);
+        if (result[2] == req.body.hash) {
+            return res.json({
+                'status': false,
+                'msg': "This document already exists in the blockchain as " + result[1] + ". Please try a new one"
+            });
+        }
+
         const data = contract.methods.issueCertificate(uuidHash, req.body.docId, req.body.hash).encodeABI();
         //console.log(data);
         const privateKey = Buffer.from(process.env.WALLET_PRIVATE_KEY, 'hex');
@@ -158,17 +176,28 @@ module.exports = router => {
     router.get('/api/transaction/list', async (req, res) => {
         try {
             const apiUrl = 'https://api-ropsten.etherscan.io/api?module=account&action=txlist&address=' + process.env.WALLET_ADDRESS + '&startblock=0&endblock=99999999&sort=asc&apikey=' + process.env.ETHARSACN_TOKEN;
-            //console.log(apiUrl);
+            console.log(apiUrl);
             let response = await axios.get(apiUrl);
             // console.log(response.data);
             let output = [];
             response.data.result.forEach(function (item) {
                 //console.log(item.to.toUpperCase() + ' ' + process.env.CONTRACT_ADDRESS.toUpperCase());
                 if (item.to.toUpperCase() == process.env.CONTRACT_ADDRESS.toUpperCase()) {
-                    output.push(item);
+                    let row = [];
+
+
+                    let decoded = abiDecoder.decodeMethod(item.input);
+                    //console.log(decoded.params[1].value);
+                    row.push(decoded.params[1].value);
+                    row.push(decoded.params[2].value);
+                    row.push(new Date(item.timeStamp * 1000));
+                    row.push(item.hash);
+                    row.push('verify');
+                    
+                    output.push(row);
                 }
             });
-            res.json(output);
+            res.json({ data: output });
         } catch (err) {
             console.log(err.message);
         }
