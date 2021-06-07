@@ -67,8 +67,10 @@
     $(document).ready(function () {
 
         $("body").on("click", ".verifyHash", function () {
+            $('#verifyHash').val('');
             $('#selectedHash').val($(this).attr('data-hash'));
             $('#verifyStatus').html('');
+            $('#verifyDocument').val('');
         });
 
         $('#verifyHashButton').click(function () {
