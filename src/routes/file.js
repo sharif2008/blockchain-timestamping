@@ -7,7 +7,7 @@
 
 var multer = require('multer');
 var sha256File = require('sha256-file');
-const { v4: uuidv4 } = require('uuid');
+const { uuid } = require('uuidv4');
 var path = require('path');
 
 var uploadStorage = multer.diskStorage({
@@ -16,7 +16,7 @@ var uploadStorage = multer.diskStorage({
         callback(null, './uploads');
     },
     filename: function (req, file, callback) {
-        callback(null, uuidv4() + path.extname(file.originalname));
+        callback(null, uuid() + path.extname(file.originalname));
     }
 });
 
